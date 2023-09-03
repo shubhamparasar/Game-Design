@@ -3,7 +3,7 @@ package models;
 import exceptions.DuplicateSymbolException;
 import exceptions.MoreThanOneBotException;
 import exceptions.PlayersCountDimensionMisMatchException;
-import strategies.WinningStrategy;
+import strategies.winningstrategies.WinningStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,5 +121,90 @@ public class Game {
         }
     }
 
+    public List<Player> getPlayers() {
+        return players;
+    }
 
+    public Board getBoard() {
+        return board;
+    }
+
+    public List<Move> getMoves() {
+        return moves;
+    }
+
+    public Player getWinner() {
+        return winner;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public int getNextMovePlayerIndex() {
+        return nextMovePlayerIndex;
+    }
+
+    public List<WinningStrategy> getWinningStrategies() {
+        return winningStrategies;
+    }
+
+    public void printBoard(){
+        board.printBoard();
+    }
+
+    private boolean validateMove(Move move){
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+        if(row >= board.getSize() || col >= board.getSize()){
+            return false;
+        }
+        if(board.getBoard().get(row).get(col).getCellState().equals(CellState.EMPTY)){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkWinner(Board board, Move move){
+        for(WinningStrategy winningStrategy : winningStrategies){
+            if(winningStrategy.checkWinner(board,move)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void makeMove(){
+        Player currentPlayer = players.get(nextMovePlayerIndex);
+        System.out.println("it is " + currentPlayer.getName() + "'s turn. Please make the move");
+        Move move = currentPlayer.makeMove(board);
+        System.out.println(currentPlayer.getName() + " has made move at row : "+move.getCell().getRow()
+                + " and column : "+move.getCell().getCol());
+
+        if (!validateMove(move)){
+            System.out.println("invalid move, please try again");
+            return;
+        }
+
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+
+        Cell cellToChange = board.getBoard().get(row).get(col);
+        cellToChange.setCellState(CellState.FILLED);
+        cellToChange.setPlayer(currentPlayer);
+        Move finalMoveObject = new Move(currentPlayer,cellToChange);
+        moves.add(move);
+
+        nextMovePlayerIndex += 1;
+        nextMovePlayerIndex %= players.size();
+
+        if (checkWinner(board,finalMoveObject)){
+            gameState = GameState.WIN;
+            winner = currentPlayer;
+        }
+
+        if(moves.size() >= this.board.getSize() * this.board.getSize()){
+            gameState = GameState.DRAW;
+        }
+
+    }
 }

@@ -1,6 +1,7 @@
 import controllers.GameController;
 import models.*;
-import strategies.WinningStrategy;
+import strategies.winningstrategies.RowWinningStrategy;
+import strategies.winningstrategies.WinningStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,14 @@ public class Main {
             playerList.add(player1);
             playerList.add(player2);
             List<WinningStrategy> winningStrategies = new ArrayList<>();
-            gameController.startGame(dimension, playerList, winningStrategies);
+            winningStrategies.add(new RowWinningStrategy());
+            Game game = gameController.startGame(dimension, playerList, winningStrategies);
+
+
+            while (gameController.checkState(game).equals(GameState.IN_PROGRESS)){
+                gameController.printBoard(game);
+                gameController.makeMove(game);
+            }
         }
         catch (Exception e){
             System.out.println(e);

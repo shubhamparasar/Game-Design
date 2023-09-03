@@ -4,8 +4,9 @@ import exceptions.DuplicateSymbolException;
 import exceptions.MoreThanOneBotException;
 import exceptions.PlayersCountDimensionMisMatchException;
 import models.Game;
+import models.GameState;
 import models.Player;
-import strategies.WinningStrategy;
+import strategies.winningstrategies.WinningStrategy;
 
 import java.util.List;
 
@@ -18,23 +19,23 @@ public class GameController {
                 .setWinningStrategies(winningStrategies).build();
     }
 
-    void makeMove(Game game){
-
+    public void makeMove(Game game){
+        game.makeMove();
     }
 
     void undo(Game game){
 
     }
 
-    void checkState(Game game){
-
+    public GameState checkState(Game game){
+        return game.getGameState();
     }
 
     void getWinner(Game game){
 
     }
 
-    void printBoard(Game game){
-
+    public void printBoard(Game game){
+        game.printBoard();
     }
 }
