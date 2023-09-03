@@ -1,4 +1,4 @@
-package strategies;
+package strategies.botplayingstrategies;
 
 import models.Board;
 import models.Move;
