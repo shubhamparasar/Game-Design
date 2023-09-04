@@ -201,8 +201,7 @@ public class Game {
             gameState = GameState.WIN;
             winner = currentPlayer;
         }
-
-        if(moves.size() >= this.board.getSize() * this.board.getSize()){
+        else if(moves.size() >= this.board.getSize() * this.board.getSize()){
             gameState = GameState.DRAW;
         }
 
